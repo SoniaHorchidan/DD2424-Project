@@ -88,3 +88,11 @@ def merge_all_images(l_channels, ab_channels, dest = "Dataset", folder = "merged
 		l_chans = l_channels[index]
 		ab_chans = ab_channels[index]
 		merge_channels(l_chans, ab_chans, dest, folder)
+
+
+'''
+Usage example:
+	create_dataset("ImageNet", "Dataset")
+	dataset, labels = get_dataset("Dataset")
+	merge_all_images(dataset, labels)
+'''
