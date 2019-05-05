@@ -20,13 +20,15 @@ def softencoding(src):
 	main = os.fsencode(src)
 
 	for folder in os.listdir(main):
-		foldername = src+"/"+os.fsdecode(folder)+"/images/"
+		foldername = src+"/"+os.fsdecode(folder)+"/"
 		for file in os.listdir(os.fsencode(foldername)):
 			filename = os.fsdecode(file)
 			if filename.endswith( ('.JPEG', '.png', '.jpg') ) and not filename.startswith("."): 			# image extension we need
+
 				image = cv2.imread(foldername+filename)
+				image = cv2.resize(image,(16,16))
 				l_channel, a_channel, b_channel = convert_rgb_to_lab(image)
-				encoding = np.zeros([64*64,313])
+				encoding = np.zeros([16*16,313])
 				a = a_channel.reshape(-1,1)
 				b = b_channel.reshape(-1,1)
 				X = np.column_stack((a,b))
@@ -34,11 +36,12 @@ def softencoding(src):
 				sigma = 5
 				wts = np.exp(-distances**2/(2*sigma**2))
 				wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
-				encoding[:,indices] = wts * prob[indices[:,0],np.newaxis]
-				encoding = encoding.reshape(64,64,313)
+				#removed class rebalancing
+				encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts 
+				encoding = encoding.reshape(16,16,313)
 
-				np.save("Dataset/softencoding/"+filename[:-5],encoding.astype(np.float16) )
+				np.save("../Dataset/Train/softencoding/"+filename[:-5],encoding.astype(np.float16) )
 
 				#print(wts)
 
-softencoding("train")
+softencoding("../Dataset/Train")

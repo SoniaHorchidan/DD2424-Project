@@ -22,7 +22,7 @@ def create_dataset(src, dest):
 	folder = os.fsencode(src)
 	for file in os.listdir(folder):
 		filename = os.fsdecode(file)
-		if filename.endswith( ('.jpeg', '.png', '.jpg') ): 			# image extension we need
+		if filename.endswith( ('.jpeg', '.png', '.jpg', 'JPEG') ): 			# image extension we need
 			# extract Lab channels
 			image = cv2.imread(src + '/' + filename)
 			l_channel, a_channel, b_channel = convert_rgb_to_lab(image)
@@ -33,6 +33,19 @@ def create_dataset(src, dest):
 			# save ab channels image
 			neutrals = np.full(l_channel.shape, 128, dtype=np.uint8)
 			merge_channels((filename, neutrals), (filename, a_channel, b_channel), dest = "Dataset", folder = "/ab_channels")
+
+
+def create_testset(src, dest):
+	folder = os.fsencode(src)
+	for file in os.listdir(folder):
+		filename = os.fsdecode(file)
+		if filename.endswith( ('.jpeg', '.png', '.jpg', 'JPEG') ): 			# image extension we need
+			# extract Lab channels
+			image = cv2.imread(src + '/' + filename)
+			l_channel, a_channel, b_channel = convert_rgb_to_lab(image)
+
+			# save grayscale image
+			cv2.imwrite(os.path.join(dest, filename), l_channel)
 
 
 '''
