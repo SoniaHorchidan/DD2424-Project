@@ -15,6 +15,24 @@ def softencoding(src):
 
 	cord = np.load("pts_in_hull.npy")
 	prob = np.load("prior_probs.npy")
+	
+	#Create weights
+	alpha = 1
+	gamma = 0.5
+
+	uni_probs = np.zeros_like(prob)
+	uni_probs[prob!=0] = 1.
+	uni_probs = uni_probs/np.sum(uni_probs)
+
+
+	prior_mix = (1-gamma)*prob + gamma*uni_probs
+
+
+	prior_factor = prior_mix**-alpha
+	prior_factor = prior_factor/np.sum(prob*prior_factor) 
+
+	###
+	
 	nbrs = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(cord)
 
 	main = os.fsencode(src)
@@ -37,7 +55,7 @@ def softencoding(src):
 				wts = np.exp(-distances**2/(2*sigma**2))
 				wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
 				#removed class rebalancing
-				encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts 
+				encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts * prior_factor[indices[:,0],np.newaxis]
 				encoding = encoding.reshape(16,16,313)
 
 				np.save("../Dataset/Train/softencoding/"+filename[:-5],encoding.astype(np.float16) )
