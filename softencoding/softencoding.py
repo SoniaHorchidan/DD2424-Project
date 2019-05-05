@@ -34,8 +34,8 @@ def softencoding(src):
 				sigma = 5
 				wts = np.exp(-distances**2/(2*sigma**2))
 				wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
-				encoding[:,indices] = wts * prob[indices[:,0],np.newaxis]
-				encoding = encoding.reshape(64,64,313)
+				#encoding[:,indices] = wts * prob[indices[:,0],np.newaxis]
+				encoding = wts.reshape(64,64,313)
 
 				np.save("Dataset/softencoding/"+filename[:-5],encoding.astype(np.float16) )
 
