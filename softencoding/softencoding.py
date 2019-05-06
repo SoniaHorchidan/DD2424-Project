@@ -11,6 +11,16 @@ def convert_rgb_to_lab(image):
 	l_channel, a_channel, b_channel = cv2.split(image_lab)
 	return l_channel, a_channel, b_channel
 
+def decode(encoding):
+	cord = np.load("pts_in_hull.npy")
+	temperature = 0.34
+	encoding[encoding!=0] = np.exp(np.log(encoding[encoding!=0])/temperature)
+	encoding = encoding/np.sum(encoding,axis=2)[:,:,np.newaxis]
+
+	a_layer = np.sum(encoding * cord[:,0],axis=2)
+	b_layer = np.sum(encoding * cord[:,1],axis=2)
+	return a_layer, b_layer
+
 def softencoding(src):
 
 	cord = np.load("pts_in_hull.npy")
