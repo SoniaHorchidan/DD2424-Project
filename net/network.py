@@ -3,6 +3,8 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D, Deconvolution2D
 from keras.layers.normalization import BatchNormalization
+from keras.layers import InputLayer
+from sklearn.neighbors import NearestNeighbors
 import scipy.ndimage.interpolation as sni
 import keras
 
@@ -19,6 +21,7 @@ class Network(object):
 
         batch_shape = self.x_train[0, :, :, :].shape
         self.build_network(batch_shape)
+
 
 
     def build_network(self, input_shape):
@@ -165,7 +168,9 @@ class Network(object):
                          dilation_rate = 1,
                          name = "conv8_313"))
 
-        self.model.compile(loss = keras.losses.categorical_crossentropy,
+
+        ### TODO add weights
+        self.model.compile(loss = multimodal_cross_entropy(np.ones(313, )),
               optimizer = "adam",
               metrics = ['accuracy'])
 
@@ -179,15 +184,12 @@ class Network(object):
           callbacks = [self.history])
 
 
-    def custom_loss_function(self, y_true, y_pred):
-        pass
-
     def predict(self, image):
         prediction = self.model.predict(image)
-        prediction = sni.zoom(prediction[0, :, :, :],(1.*64/16, 1.*64/16, 1))
-        return prediction
-
+        pic = sni.zoom(prediction[0, :, :, :],(1. * 64 / 16, 1. * 64 / 16, 1))
+        return prediction, pic
        
+
 
 class AccuracyHistory(keras.callbacks.Callback):
     def on_train_begin(self, logs={}):
@@ -195,3 +197,22 @@ class AccuracyHistory(keras.callbacks.Callback):
 
     def on_epoch_end(self, batch, logs={}):
         self.acc.append(logs.get('acc'))
+
+
+
+
+def multimodal_cross_entropy(weights):
+        
+    weights = keras.backend.variable(weights)
+
+    def loss(y_true, y_pred):
+        # scale predictions so that the class probas of each sample sum to 1
+        y_pred /= keras.backend.sum(y_pred, axis = - 1, keepdims = True)
+        # clip to prevent NaN's and Inf's
+        y_pred = keras.backend.clip(y_pred, keras.backend.epsilon(), 1 - keras.backend.epsilon())
+        # calc
+        loss = y_true * keras.backend.log(y_pred) * weights
+        loss = - keras.backend.sum(loss, - 1)
+        return loss
+        
+    return loss

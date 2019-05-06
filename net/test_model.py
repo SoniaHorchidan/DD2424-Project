@@ -50,9 +50,9 @@ y_test = read_encodings(soft_enc_test_dir)
 
 sample = np.zeros((1, 64, 64, 1))
 sample[0, :, :, :] = x_train[0, :, :, :]
+label = np.zeros((1, 16, 16, 313))
+label[0, :, :, :] = y_train[0, :, :, :]
 
 net = Network(x_train, y_train, x_test, y_test)
-net.train(10, 1)
-pred = net.predict(sample)
-print(pred.shape)
-print(pred)
+net.train(3, 1)
+pred, pic = net.predict(sample)
