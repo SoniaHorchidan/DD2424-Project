@@ -21,6 +21,7 @@ def decode(encoding):
 	b_layer = np.sum(encoding * cord[:,1],axis=2)
 	return a_layer, b_layer
 
+
 def softencoding(src):
 
 	cord = np.load("pts_in_hull.npy")
@@ -67,8 +68,9 @@ def softencoding(src):
 				#removed class rebalancing
 				encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts * prior_factor[indices[:,0],np.newaxis]
 				encoding = encoding.reshape(16,16,313)
-
-				np.save("../Dataset/Train/softencoding/"+filename[:-5],encoding.astype(np.float16) )
+				# print(encoding[0, 0, :])
+				# print("\n\n\n\n")
+				np.save("../Dataset/Train/softencoding/"+filename[:-5], encoding)
 
 				#print(wts)
 

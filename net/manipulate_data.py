@@ -2,6 +2,7 @@ import numpy as np
 import os
 import sys
 import cv2
+import scipy.ndimage.interpolation as sni
 
 
 '''
@@ -52,14 +53,20 @@ def create_testset(src, dest):
 Function which merges the given L and ab channels and saves the result inside the 
 dest/folder directory
 '''
-def merge_channels(l_channel, ab_channels, dest, folder):
+def merge_channels(l_channel, ab_channels, dest, folder, zoom_in = False):
 	a_channel = ab_channels[1]
 	b_channel = ab_channels[2]
 	l_chan = l_channel[1]
 	filename = l_channel[0]
+
 	merged_channels = cv2.merge((l_chan, a_channel, b_channel))
 	final_image = cv2.cvtColor(merged_channels, cv2.COLOR_LAB2BGR)
+
+	if(zoom_in == True):
+		final_image = sni.zoom(final_image,(1. * 4, 1. * 4, 1))
+
 	cv2.imwrite(os.path.join(dest + "/" + folder, filename), final_image)
+
 
 
 '''

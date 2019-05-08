@@ -5,8 +5,8 @@ from keras.layers.convolutional import Conv2D, Deconvolution2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers import InputLayer
 from sklearn.neighbors import NearestNeighbors
-import scipy.ndimage.interpolation as sni
 import keras
+
 
 
 """base model"""
@@ -182,12 +182,18 @@ class Network(object):
           verbose = 1,
           validation_data = (self.x_test, self.y_test),
           callbacks = [self.history])
+        return self.model
 
 
     def predict(self, image):
         prediction = self.model.predict(image)
-        pic = sni.zoom(prediction[0, :, :, :],(1. * 64 / 16, 1. * 64 / 16, 1))
-        return prediction, pic
+        return prediction
+
+    def set_loaded_model(self, model):
+        self.model = model
+        self.model.compile(loss = multimodal_cross_entropy(np.ones(313, )),
+              optimizer = "adam",
+              metrics = ['accuracy'])
        
 
 
@@ -200,17 +206,13 @@ class AccuracyHistory(keras.callbacks.Callback):
 
 
 
-
 def multimodal_cross_entropy(weights):
         
     weights = keras.backend.variable(weights)
 
     def loss(y_true, y_pred):
-        # scale predictions so that the class probas of each sample sum to 1
         y_pred /= keras.backend.sum(y_pred, axis = - 1, keepdims = True)
-        # clip to prevent NaN's and Inf's
         y_pred = keras.backend.clip(y_pred, keras.backend.epsilon(), 1 - keras.backend.epsilon())
-        # calc
         loss = y_true * keras.backend.log(y_pred) * weights
         loss = - keras.backend.sum(loss, - 1)
         return loss
