@@ -214,9 +214,9 @@ def multimodal_cross_entropy(weights):
         y_pred /= keras.backend.sum(y_pred, axis = - 1, keepdims = True)
         y_pred = keras.backend.clip(y_pred, keras.backend.epsilon(), 1 - keras.backend.epsilon())
 
-        index = keras.backend.argmax(y_true,axis = 2) #We want a tensor of dimension 16x16x(minibatchsize) So might have to change axis
+        index = keras.backend.argmax(y_true,axis = 3) #We want a tensor of dimension 16x16x(minibatchsize) So might have to change axis
         weights = keras.backend.gather(classrebalance, index) #We want a tensor of dimension 16x16x(minibatchsize)
-        loss = y_true * keras.backend.log(y_pred) * weights
+        loss = y_true * keras.backend.log(y_pred) * tf.expand_dims(weights, -1)
         loss = - keras.backend.sum(loss, - 1)
         return loss
 
