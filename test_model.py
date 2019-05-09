@@ -75,7 +75,7 @@ model = net.train(1, 80)
 model.save(model_name)
 
 ### use when loading a pretrained model
-# model = load_model('model.h5', custom_objects={'loss': multimodal_cross_entropy(np.ones(313,))})
+# model = load_model('model.h5', custom_objects={'loss': multimodal_cross_entropy()})
 # net.set_loaded_model(model)
 
 pred = net.predict(sample)
