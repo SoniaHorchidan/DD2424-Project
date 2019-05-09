@@ -57,6 +57,8 @@ def softencoding(src):
 				image = cv2.imread(foldername+filename)
 				image = cv2.resize(image,(16,16))
 				l_channel, a_channel, b_channel = convert_rgb_to_lab(image)
+				a_channel = a_channel/256 * 190 - 90
+				b_channel = b_channel/256 * 220 - 110
 				encoding = np.zeros([16*16,313])
 				a = a_channel.reshape(-1,1)
 				b = b_channel.reshape(-1,1)
