@@ -194,7 +194,7 @@ class Network(object):
         self.model.compile(loss = multimodal_cross_entropy(np.ones(313, )),
               optimizer = "adam",
               metrics = ['accuracy'])
-       
+
 
 
 class AccuracyHistory(keras.callbacks.Callback):
@@ -207,14 +207,17 @@ class AccuracyHistory(keras.callbacks.Callback):
 
 
 def multimodal_cross_entropy(weights):
-        
-    weights = keras.backend.variable(weights)
+
+    classrebalance = np.load("classrebalance.npy")
 
     def loss(y_true, y_pred):
         y_pred /= keras.backend.sum(y_pred, axis = - 1, keepdims = True)
         y_pred = keras.backend.clip(y_pred, keras.backend.epsilon(), 1 - keras.backend.epsilon())
+
+        index = keras.backend.argmax(y_true,axis = 2) #We want a tensor of dimension 16x16x(minibatchsize) So might have to change axis
+        weights = keras.backend.gather(classrebalance, index) #We want a tensor of dimension 16x16x(minibatchsize)
         loss = y_true * keras.backend.log(y_pred) * weights
         loss = - keras.backend.sum(loss, - 1)
         return loss
-        
+
     return loss
