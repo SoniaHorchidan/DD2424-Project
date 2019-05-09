@@ -19,6 +19,9 @@ def decode(encoding):
 
 	a_layer = np.sum(encoding * cord[:,0],axis=2)
 	b_layer = np.sum(encoding * cord[:,1],axis=2)
+	a_layer = (a_layer + 90) / 190 * 256
+	b_layer = (b_layer + 110) / 220 * 256
+	
 	return a_layer, b_layer
 
 
