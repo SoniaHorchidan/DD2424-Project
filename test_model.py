@@ -6,6 +6,8 @@ import manipulate_data
 import numpy as np
 import py_compile
 from keras.models import load_model
+import datetime
+from softencoding import decode
 
 def read_images(src):
 	x = []
@@ -43,24 +45,13 @@ def read_encodings(src):
 	return y
 
 
-### TODO: import it from its module
-def decode(encoding):
-	cord = np.load("../softencoding/pts_in_hull.npy")
-	temperature = 0.34
-	encoding[encoding!=0] = np.exp(np.log(encoding[encoding!=0])/temperature)
-	encoding = encoding/np.sum(encoding,axis=2)[:,:,np.newaxis]
+model_num = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+model_name = "model" + str(model_num) + ".h5"
 
-	a_layer = np.sum(encoding * cord[:,0],axis=2)
-	b_layer = np.sum(encoding * cord[:,1],axis=2)
-	a_layer = (a_layer + 90) / 190 * 256
-	b_layer = (b_layer + 110) / 220 * 256
-	return a_layer, b_layer
-
-
-train_dir = "../Dataset/Train/images"
-test_dir = "../Dataset/Test/images"
-soft_enc_train_dir = "../Dataset/Train/softencoding"
-soft_enc_test_dir = "../Dataset/Test/softencoding"
+train_dir = "Dataset/Train/images"
+test_dir = "Dataset/Test/images"
+soft_enc_train_dir = "Dataset/Train/softencoding"
+soft_enc_test_dir = "Dataset/Test/softencoding"
 
 # manipulate_data.create_testset(train_dir, test_dir)
 
@@ -80,12 +71,12 @@ label[0, :, :, :] = y_train[num_pic, :, :, :]
 net = Network(x_train, y_train, x_test, y_test)
 
 ### use when training a new model
-# model = net.train(1, 80)
-# model.save('model.h5')
+model = net.train(1, 80)
+model.save(model_name)
 
 ### use when loading a pretrained model
-model = load_model('model.h5', custom_objects={'loss': multimodal_cross_entropy(np.ones(313,))})
-net.set_loaded_model(model)
+# model = load_model('model.h5', custom_objects={'loss': multimodal_cross_entropy(np.ones(313,))})
+# net.set_loaded_model(model)
 
 pred = net.predict(sample)
 
@@ -93,4 +84,4 @@ a, b = decode(pred.reshape((16, 16, 313)))
 l = x_train_small[num_pic, :, :, 0];
 
 manipulate_data.merge_channels(("test.jpg", l.astype(dtype=np.uint8)), 
-	("test.jpg", a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)), "../Dataset", "merged", True)
+	("test.jpg", a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)), "Dataset", "merged", True)

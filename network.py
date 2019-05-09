@@ -33,7 +33,7 @@ class Network(object):
                          dilation_rate = 1,
                          padding = "same",
                          input_shape = input_shape,
-                        data_format='channels_last',
+                         data_format='channels_last',
                          name = "conv1_1"))
         self.model.add(Conv2D(64, kernel_size = 3, strides = 2,
                          activation = 'relu',
@@ -170,7 +170,7 @@ class Network(object):
 
 
         ### TODO add weights
-        self.model.compile(loss = multimodal_cross_entropy(np.ones(313, )),
+        self.model.compile(loss = multimodal_cross_entropy(),
               optimizer = "adam",
               metrics = ['accuracy'])
 
@@ -191,7 +191,7 @@ class Network(object):
 
     def set_loaded_model(self, model):
         self.model = model
-        self.model.compile(loss = multimodal_cross_entropy(np.ones(313, )),
+        self.model.compile(loss = multimodal_cross_entropy(),
               optimizer = "adam",
               metrics = ['accuracy'])
 
@@ -206,10 +206,11 @@ class AccuracyHistory(keras.callbacks.Callback):
 
 
 
-def multimodal_cross_entropy(weights):
+def multimodal_cross_entropy():
 
     classrebalance = np.load("classrebalance.npy")
     classrebalance = classrebalance.astype(np.float32)
+    
     def loss(y_true, y_pred):
         y_pred /= keras.backend.sum(y_pred, axis = - 1, keepdims = True)
         y_pred = keras.backend.clip(y_pred, keras.backend.epsilon(), 1 - keras.backend.epsilon())

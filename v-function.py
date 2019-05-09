@@ -4,11 +4,8 @@ import cv2
 from scipy import misc
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
+from manipulate_data import convert_rgb_to_lab
 
-def convert_rgb_to_lab(image):
-	image_lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
-	l_channel, a_channel, b_channel = cv2.split(image_lab)
-	return l_channel, a_channel, b_channel
 
 def pixel_analyzing(src):
 
