@@ -40,8 +40,6 @@ def softencoding(a_channel, b_channel):
 	prior_factor = prior_mix**-alpha
 	prior_factor = prior_factor/np.sum(prob*prior_factor) 
 
-	###
-	
 	nbrs = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(cord)
 
 	encoding = np.zeros([16*16,313])
@@ -52,38 +50,7 @@ def softencoding(a_channel, b_channel):
 	sigma = 5
 	wts = np.exp(-distances**2/(2*sigma**2))
 	wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
-	#removed class rebalancing
+
 	encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts ## * prior_factor[indices[:,0],np.newaxis]
 	encoding = encoding.reshape(16,16,313)
 	return encoding
-
-
-	# for folder in os.listdir(main):
-	# 	foldername = src+"/"+os.fsdecode(folder)+"/"
-	# 	for file in os.listdir(os.fsencode(foldername)):
-	# 		filename = os.fsdecode(file)
-	# 		if filename.endswith( ('.JPEG', '.png', '.jpg') ) and not filename.startswith("."): 			# image extension we need
-
-	# 			image = cv2.imread(foldername+filename)
-	# 			image = cv2.resize(image,(16,16))
-	# 			l_channel, a_channel, b_channel = convert_rgb_to_lab(image)
-	# 			a_channel = a_channel/256 * 190 - 90
-	# 			b_channel = b_channel/256 * 220 - 110
-	# 			encoding = np.zeros([16*16,313])
-	# 			a = a_channel.reshape(-1,1)
-	# 			b = b_channel.reshape(-1,1)
-	# 			X = np.column_stack((a,b))
-	# 			distances, indices = nbrs.kneighbors(X)
-	# 			sigma = 5
-	# 			wts = np.exp(-distances**2/(2*sigma**2))
-	# 			wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
-	# 			#removed class rebalancing
-	# 			encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts ## * prior_factor[indices[:,0],np.newaxis]
-	# 			encoding = encoding.reshape(16,16,313)
-	# 			# print(encoding[0, 0, :])
-	# 			# print("\n\n\n\n")
-	# 			np.save(src + "/softencoding/"+filename[:-5], encoding)
-
-	# 			#print(wts)
-
-# softencoding("Dataset/Test")
