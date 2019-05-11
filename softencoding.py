@@ -16,14 +16,12 @@ def decode(encoding):
 
 	a_layer = np.sum(encoding * cord[:,0],axis=2)
 	b_layer = np.sum(encoding * cord[:,1],axis=2)
-	a_layer = (a_layer + 90) / 190 * 256
-	b_layer = (b_layer + 110) / 220 * 256
-	
-	return a_layer, b_layer
+	a = a_layer.astype(np.int32) + 128			# (a_layer + 90) / 190 * 256
+	b = b_layer.astype(np.int32) + 128			# (b_layer + 90) / 190 * 256
+	return a, b 
 
 
 def softencoding(a_channel, b_channel):
-
 	cord = np.load("pts_in_hull.npy")
 	prob = np.load("prior_probs.npy")
 	

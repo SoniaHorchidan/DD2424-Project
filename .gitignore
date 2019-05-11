@@ -1,4 +1,5 @@
 Dataset
 __pycache__
 model*
-
+valid_names.txt
+train_names.txt

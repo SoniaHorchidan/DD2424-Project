@@ -48,9 +48,9 @@ class MiniBatchesSeqGeneretor(Sequence):
             out_a= cv.resize(a, (16, 16), cv.INTER_CUBIC)
             out_b= cv.resize(b, (16, 16), cv.INTER_CUBIC)
 
-            out_a = out_a.astype(np.int32) / 256 * 190 - 90
-            out_b = out_b.astype(np.int32) / 256 * 190 - 90
-
+            out_a = out_a.astype(np.int32) - 128        ## / 256 * 190 - 90
+            out_b = out_b.astype(np.int32) - 128        ## / 256 * 190 - 90
+            
             y = softencoding(out_a, out_b)
 
             batch_x[i_batch, :, :, 0] = x

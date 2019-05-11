@@ -1,20 +1,21 @@
 from keras.models import load_model
 from network import multimodal_cross_entropy
 from manipulate_data import convert_rgb_to_lab, merge_channels
-from softencoding import decode
+from softencoding import decode, softencoding
 from network import Network
 import numpy as np
 import os
 import cv2
 
 net = Network()
-model_name = 'model2019-05-10_09-29.h5'
+model_name = 'model2019-05-11_09-55.h5'
 model = load_model(model_name, custom_objects={'loss': multimodal_cross_entropy()})
 net.set_loaded_model(model)
 
 
 test_folder = "Dataset/Test/images"
 
+index  = 1
 folder = os.fsencode(test_folder)
 for file in os.listdir(folder):
 	filename = os.fsdecode(file)
@@ -29,6 +30,7 @@ for file in os.listdir(folder):
 		x_test[0, :, :, 0] = l / 255.
 
 		pred = net.predict(x_test)
+
 		a, b = decode(pred.reshape((16, 16, 313)))
 
 		new_result_name = model_name + "_" + filename + ".jpg"

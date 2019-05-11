@@ -3,7 +3,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D, Deconvolution2D
 from keras.layers.normalization import BatchNormalization
-from keras.layers import InputLayer
+from keras.layers import InputLayer, UpSampling2D
 from sklearn.neighbors import NearestNeighbors
 from keras.regularizers import l2
 import keras
@@ -175,7 +175,8 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 8
-        self.model.add(Deconvolution2D(256, kernel_size = 4, strides = 2,
+        self.model.add(UpSampling2D(size = (2, 2)))
+        self.model.add(Conv2D(256, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -224,9 +225,10 @@ class Network(object):
         return prediction
 
     def set_loaded_model(self, model):
+        sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
         self.model = model
-        self.model.compile(loss = multimodal_cross_entropy(),
-              optimizer = "adam",
+        self.model.compile(loss = 'categorical_crossentropy',
+              optimizer = sgd,
               metrics = ['accuracy'])
 
 
