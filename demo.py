@@ -7,11 +7,11 @@ import numpy as np
 import os
 import cv2
 
-net = Network()
-model_name = 'model2019-05-11_09-55.h5'
-model = load_model(model_name, custom_objects={'loss': multimodal_cross_entropy()})
-net.set_loaded_model(model)
 
+## Change with wanted model name
+model_name = 'model2019-05-11_13-50.h5'
+net = Network(model_name)
+net.load()
 
 test_folder = "Dataset/Test/images"
 
@@ -24,7 +24,6 @@ for file in os.listdir(folder):
 		image_small = cv2.resize(image,(16,16))
 
 		l, a, b = convert_rgb_to_lab(image)
-		l_small, a_small, b_small = convert_rgb_to_lab(image_small)
 
 		x_test = np.empty((1, 64, 64, 1), dtype=np.float32)
 		x_test[0, :, :, 0] = l / 255.
@@ -36,5 +35,5 @@ for file in os.listdir(folder):
 		new_result_name = model_name + "_" + filename + ".jpg"
 
 		merge_channels((new_result_name, l.astype(dtype=np.uint8)), 
-			(new_result_name, aa.astype(dtype=np.uint8), bb.astype(dtype=np.uint8)),
+			(new_result_name, a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)),
 			 "Dataset", "merged", True)

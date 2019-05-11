@@ -4,9 +4,11 @@ from keras.models import Sequential
 from keras.layers.convolutional import Conv2D, Deconvolution2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers import InputLayer, UpSampling2D
+from keras.callbacks import ModelCheckpoint
 from sklearn.neighbors import NearestNeighbors
 from keras.regularizers import l2
 import keras
+from keras.models import load_model
 from generate_minibatches import train_gen_minibatches, valid_gen_minibatches
 
 
@@ -15,12 +17,8 @@ l2_reg = l2(1e-3)
 """base model"""
 class Network(object):
 
-    def __init__(self):
-        # self.x_train = x_train
-        # self.y_train = y_train
-        # self.x_test = x_test
-        # self.y_test = y_test
-        self.history = AccuracyHistory()
+    def __init__(self, model_name):
+        self.model_name = model_name
 
         batch_shape = (64, 64, 1)
         self.build_network(batch_shape)
@@ -203,42 +201,41 @@ class Network(object):
                          padding = "same",
                          name = "conv8_313"))
 
-
-        ### TODO add weights
         self.model.compile(loss = multimodal_cross_entropy(),
               optimizer = "adam",
               metrics = ['accuracy'])
 
 
     def train(self, epochs, batch_size = 80):
+        checkpoint = ModelCheckpoint(self.model_name, monitor = 'val_loss', 
+                            verbose = 1, save_best_only = True, mode = 'min')
+        callbacks_list = [checkpoint]
+
         self.model.fit_generator(train_gen_minibatches(),
                             validation_data = valid_gen_minibatches(),
                             epochs = epochs,
                             verbose = 1,
                             use_multiprocessing = True,
-                            workers = 8)
+                            workers = 8,
+                            callbacks = callbacks_list)
         return self.model
+
+
+    def load(self):
+        self.model = load_model(self.model_name, custom_objects={'loss':
+                                                multimodal_cross_entropy()})
 
 
     def predict(self, image):
         prediction = self.model.predict(image)
         return prediction
 
-    def set_loaded_model(self, model):
-        sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
-        self.model = model
-        self.model.compile(loss = 'categorical_crossentropy',
-              optimizer = sgd,
-              metrics = ['accuracy'])
-
-
-
-class AccuracyHistory(keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
-        self.acc = []
-
-    def on_epoch_end(self, batch, logs={}):
-        self.acc.append(logs.get('acc'))
+    # def set_loaded_model(self, model, name):
+    #     self.model = model
+    #     self.name = name
+    #     self.model.compile(loss = 'categorical_crossentropy',
+    #           optimizer = 'adam',
+    #           metrics = ['accuracy'])
 
 
 
