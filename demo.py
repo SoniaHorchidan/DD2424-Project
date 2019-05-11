@@ -35,6 +35,6 @@ for file in os.listdir(folder):
 
 		new_result_name = model_name + "_" + filename + ".jpg"
 
-		merge_channels((new_result_name, l_small.astype(dtype=np.uint8)), 
-			(new_result_name, a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)),
+		merge_channels((new_result_name, l.astype(dtype=np.uint8)), 
+			(new_result_name, aa.astype(dtype=np.uint8), bb.astype(dtype=np.uint8)),
 			 "Dataset", "merged", True)

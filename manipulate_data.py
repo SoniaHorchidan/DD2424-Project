@@ -59,11 +59,12 @@ def merge_channels(l_channel, ab_channels, dest, folder, zoom_in = False):
 	l_chan = l_channel[1]
 	filename = l_channel[0]
 
+	if(zoom_in == True):
+		a_channel = cv2.resize(a_channel, (64, 64), cv2.INTER_CUBIC)
+		b_channel = cv2.resize(b_channel, (64, 64), cv2.INTER_CUBIC)
+
 	merged_channels = cv2.merge((l_chan, a_channel, b_channel))
 	final_image = cv2.cvtColor(merged_channels, cv2.COLOR_LAB2BGR)
-
-	if(zoom_in == True):
-		final_image = sni.zoom(final_image,(1. * 4, 1. * 4, 1))
 
 	cv2.imwrite(os.path.join(dest + "/" + folder, filename), final_image)
 

@@ -16,4 +16,4 @@ def create_txt_file(src):
 
 
 if __name__ == '__main__':
-    create_txt_file('Dataset/Validation/images/')
+    create_txt_file('Dataset/Train/images/')

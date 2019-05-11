@@ -42,8 +42,7 @@ class MiniBatchesSeqGeneretor(Sequence):
             image = os.path.join(self.image_folder, name)
             bgr = cv.imread(image)
             l, a, b = convert_rgb_to_lab(bgr)
-            l_orig = l
-            x = l_orig / 255.
+            x = l / 255.
 
             out_a= cv.resize(a, (16, 16), cv.INTER_CUBIC)
             out_b= cv.resize(b, (16, 16), cv.INTER_CUBIC)
