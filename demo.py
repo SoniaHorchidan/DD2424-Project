@@ -15,7 +15,6 @@ net.load()
 
 test_folder = "Dataset/Test/images"
 
-index  = 1
 folder = os.fsencode(test_folder)
 for file in os.listdir(folder):
 	filename = os.fsdecode(file)
