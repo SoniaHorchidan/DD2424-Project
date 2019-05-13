@@ -18,7 +18,7 @@ def decode(encoding):
 	b_layer = np.sum(encoding * cord[:,1],axis=2)
 	a = a_layer.astype(np.int32) + 128			# (a_layer + 90) / 190 * 256
 	b = b_layer.astype(np.int32) + 128			# (b_layer + 90) / 190 * 256
-	return a, b 
+	return a, b
 
 
 def softencoding(a_channel, b_channel):
@@ -26,7 +26,7 @@ def softencoding(a_channel, b_channel):
 
 	nbrs = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(cord)
 
-	encoding = np.zeros([16*16,313])
+	encoding = np.zeros([64*64,313])
 	a = a_channel.reshape(-1,1)
 	b = b_channel.reshape(-1,1)
 	X = np.column_stack((a,b))
@@ -35,6 +35,6 @@ def softencoding(a_channel, b_channel):
 	wts = np.exp(-distances**2/(2*sigma**2))
 	wts = wts/np.sum(wts,axis=1)[:,np.newaxis]
 
-	encoding[np.arange(0,16*16)[:,np.newaxis],indices] = wts 
-	encoding = encoding.reshape(16,16,313)
+	encoding[np.arange(0,64*64)[:,np.newaxis],indices] = wts
+	encoding = encoding.reshape(64,64,313)
 	return encoding

@@ -9,7 +9,7 @@ import cv2
 
 
 ## Change with wanted model name
-model_name = 'model2019-05-11_13-50.h5'
+model_name = 'model2019-05-13_11-36.h5'
 net = Network(model_name)
 net.load()
 
@@ -18,9 +18,9 @@ test_folder = "Dataset/Test/images"
 folder = os.fsencode(test_folder)
 for file in os.listdir(folder):
 	filename = os.fsdecode(file)
-	if filename.endswith( ('.JPEG', '.png', '.jpg') ): 
+	if filename.endswith( ('.JPEG', '.png', '.jpg') ):
 		image = cv2.imread(os.path.join(test_folder, filename))
-		image_small = cv2.resize(image,(16,16))
+
 
 		l, a, b = convert_rgb_to_lab(image)
 
@@ -29,10 +29,10 @@ for file in os.listdir(folder):
 
 		pred = net.predict(x_test)
 
-		a, b = decode(pred.reshape((16, 16, 313)))
+		a, b = decode(pred.reshape((64, 64, 313)))
 
 		new_result_name = model_name + "_" + filename + ".jpg"
 
-		merge_channels((new_result_name, l.astype(dtype=np.uint8)), 
+		merge_channels((new_result_name, l.astype(dtype=np.uint8)),
 			(new_result_name, a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)),
 			 "Dataset", "merged", True)

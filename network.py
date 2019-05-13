@@ -62,7 +62,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 3
-        self.model.add(Conv2D(256, kernel_size = 3, 
+        self.model.add(Conv2D(256, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -89,13 +89,13 @@ class Network(object):
                          kernel_initializer = "he_normal",
                          kernel_regularizer = l2_reg,
                          name = "conv4_1"))
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
                          kernel_regularizer = l2_reg,
                          name = "conv4_2"))
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -104,7 +104,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 5
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          dilation_rate = 2,
                          padding = "same",
@@ -118,7 +118,7 @@ class Network(object):
                          kernel_regularizer = l2_reg,
                          dilation_rate = 2,
                          name = "conv5_2"))
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -128,7 +128,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 6
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          dilation_rate = 2,
                          padding = "same",
@@ -142,7 +142,7 @@ class Network(object):
                          kernel_initializer = "he_normal",
                          kernel_regularizer = l2_reg,
                          name = "conv6_2"))
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          dilation_rate = 2,
                          padding = "same",
@@ -152,7 +152,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 7
-        self.model.add(Conv2D(512, kernel_size = 3, 
+        self.model.add(Conv2D(512, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -173,7 +173,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Layer 8
-        self.model.add(UpSampling2D(size = (2, 2)))
+        self.model.add(UpSampling2D(size = (8, 8)))
         self.model.add(Conv2D(256, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
@@ -186,7 +186,7 @@ class Network(object):
                          kernel_initializer = "he_normal",
                          kernel_regularizer = l2_reg,
                          name = "conv8_2"))
-        self.model.add(Conv2D(256, kernel_size = 3, 
+        self.model.add(Conv2D(256, kernel_size = 3,
                          activation = 'relu',
                          padding = "same",
                          kernel_initializer = "he_normal",
@@ -195,7 +195,7 @@ class Network(object):
         self.model.add(BatchNormalization())
 
         ### Softmax
-        self.model.add(Conv2D(313, kernel_size = 1, 
+        self.model.add(Conv2D(313, kernel_size = 1,
                          activation = 'softmax',
                          dilation_rate = 1,
                          padding = "same",
@@ -208,7 +208,7 @@ class Network(object):
 
 
     def train(self, epochs, batch_size = 80):
-        checkpoint = ModelCheckpoint(self.model_name, monitor = 'val_loss', 
+        checkpoint = ModelCheckpoint(self.model_name, monitor = 'val_loss',
                             verbose = 1, save_best_only = True, mode = 'min')
         callbacks_list = [checkpoint]
 

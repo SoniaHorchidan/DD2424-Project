@@ -8,6 +8,6 @@ model_name = "model" + str(model_num) + ".h5"
 net = Network(model_name)
 
 ### Load a model and continue training
-net.load()
+#net.load()
 
 model = net.train(epochs = 1 , batch_size = 96)
