@@ -231,13 +231,6 @@ class Network(object):
         prediction = self.model.predict(image)
         return prediction
 
-    # def set_loaded_model(self, model, name):
-    #     self.model = model
-    #     self.name = name
-    #     self.model.compile(loss = 'categorical_crossentropy',
-    #           optimizer = 'adam',
-    #           metrics = ['accuracy'])
-
 
 
 def multimodal_cross_entropy():

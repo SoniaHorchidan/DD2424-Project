@@ -9,7 +9,7 @@ import cv2
 
 
 ## Change with wanted model name
-model_name = 'model2019-05-11_13-50.h5'
+model_name = 'new_model.h5'
 net = Network(model_name)
 net.load()
 
@@ -31,7 +31,7 @@ for file in os.listdir(folder):
 
 		a, b = decode(pred.reshape((16, 16, 313)))
 
-		new_result_name = model_name + "_" + filename + ".jpg"
+		new_result_name = model_name + "_" + filename
 
 		merge_channels((new_result_name, l.astype(dtype=np.uint8)), 
 			(new_result_name, a.astype(dtype=np.uint8), b.astype(dtype=np.uint8)),
