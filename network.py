@@ -201,8 +201,9 @@ class Network(object):
                          padding = "same",
                          name = "conv8_313"))
 
+        sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
         self.model.compile(loss = multimodal_cross_entropy(),
-              optimizer = "adam",
+              optimizer = sgd,
               metrics = ['accuracy'])
 
 
